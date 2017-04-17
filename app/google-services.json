@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "108261337866",
+    "firebase_url": "https://trip-and-chat-project.firebaseio.com",
+    "project_id": "trip-and-chat-project",
+    "storage_bucket": "trip-and-chat-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:108261337866:android:9c714ae1a4272375",
+        "android_client_info": {
+          "package_name": "com.example.surajgdesai.homework09a"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "108261337866-j1st2ne1ta16ur4ipk9ac5r81m91uoil.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.surajgdesai.homework09a",
+            "certificate_hash": "980f1d3c5260abb5b798cbc41efe12ab5d16c111"
+          }
+        },
+        {
+          "client_id": "108261337866-8igl910aq6a9ao56jpjs1c0ehhorf32a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtPDIUo9yNEGabLz-aHKdyDwi5QfNiSqA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "108261337866-8igl910aq6a9ao56jpjs1c0ehhorf32a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
