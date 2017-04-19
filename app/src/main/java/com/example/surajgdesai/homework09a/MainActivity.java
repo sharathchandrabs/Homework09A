@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -51,6 +52,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.dashboardtoolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setTitle(R.string.AppTitle);
 
         refDb = FirebaseDatabase.getInstance();
         refDatabase = refDb.getReference().child("Users");
@@ -147,10 +152,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
             refDatabase.child(user.getKey()).setValue(user);
-
+/*
             Gson gson = new Gson();
-            String json = gson.toJson(user);
+            String json = gson.toJson(user);*//*
             prefEditor.putString(getResources().getString(R.string.activeUsr), json);
+            prefEditor.commit();*/
+
+            prefEditor.putString("userKey", user.getKey());
             prefEditor.commit();
 
             Intent intent = new Intent(this, DashboardActivity.class);

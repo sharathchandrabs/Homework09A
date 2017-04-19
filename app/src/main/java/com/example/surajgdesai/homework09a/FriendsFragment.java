@@ -1,5 +1,6 @@
 package com.example.surajgdesai.homework09a;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -24,6 +25,9 @@ public class FriendsFragment extends Fragment {
             public void onClick(View v) {
                 Snackbar.make(root, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                Intent intent =  new Intent(getContext(), FriendRequestActivity.class);
+                startActivity(intent);
+
             }
         });
         return root;

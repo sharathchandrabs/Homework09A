@@ -115,9 +115,7 @@ public class SignUpActivity extends AppCompatActivity {
                                                                 .setPhotoUri(Uri.parse(user.getProfilePicUrl()))
                                                                 .build();
                                                         firebaseuser.updateProfile(profileUpdates);
-                                                        Gson gson = new Gson();
-                                                        String json = gson.toJson(user);
-                                                        prefEditor.putString(getResources().getString(R.string.activeUsr), json);
+                                                        prefEditor.putString("userKey", user.getKey());
                                                         prefEditor.commit();
                                                     } catch (Exception e) {
                                                         e.printStackTrace();
@@ -129,6 +127,11 @@ public class SignUpActivity extends AppCompatActivity {
                                         });
                                     }
                                 }
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d("Signup exception", e.getMessage().toString());
                             }
                         });
                     } else {

@@ -20,7 +20,10 @@
         <activity
             android:name=".DashboardActivity"
             android:label="@string/title_activity_dashboard"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+        <activity android:name=".JoinTripActivity" />
+        <activity android:name=".CreateTripActivity" />
+        <activity android:name=".FriendRequestActivity"></activity>
     </application>
 
 </manifest>

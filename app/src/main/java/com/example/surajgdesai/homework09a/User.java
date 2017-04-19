@@ -3,6 +3,8 @@ package com.example.surajgdesai.homework09a;
 import android.net.Uri;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Suraj G Desai on 4/13/2017.
@@ -14,6 +16,13 @@ public class User implements Serializable {
     String displayName;
     String gender;
     String email;
+    List<Trip> trips;
+    List<String> friends;
+
+    public User() {
+        trips = new ArrayList<>();
+        friends = new ArrayList<>();
+    }
 
     public String getEmail() {
         return email;
@@ -25,6 +34,21 @@ public class User implements Serializable {
 
     String key;
     String profilePicUrl;
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "fname='" + fname + '\'' +
+                ", lname='" + lname + '\'' +
+                ", displayName='" + displayName + '\'' +
+                ", gender='" + gender + '\'' +
+                ", email='" + email + '\'' +
+                ", trips=" + trips +
+                ", friends=" + friends +
+                ", key='" + key + '\'' +
+                ", profilePicUrl='" + profilePicUrl + '\'' +
+                '}';
+    }
 
     public String getKey() {
         return key;
