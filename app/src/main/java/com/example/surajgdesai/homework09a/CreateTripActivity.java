@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -15,26 +14,19 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-
-import static android.R.attr.bitmap;
 
 public class CreateTripActivity extends AppCompatActivity implements UploadImageAsyncTask.IGetEpisodes{
     ImageView tripPhoto;
@@ -81,7 +73,6 @@ public class CreateTripActivity extends AppCompatActivity implements UploadImage
                     Toast.makeText(CreateTripActivity.this, "Title or Location missing!", Toast.LENGTH_LONG).show();
                 } else {
                     if (globalTripPhoto == null) {
-
                         addTrip.setTitle(tripTitle.getText().toString());
                         addTrip.setLocation(tripLocation.getText().toString());
                     } else {
@@ -99,7 +90,7 @@ public class CreateTripActivity extends AppCompatActivity implements UploadImage
                         globalTripPhoto.compress(Bitmap.CompressFormat.PNG, 100, baos);
                         byte[] bytedata = baos.toByteArray();
                         try{
-                            new UploadImageAsyncTask(CreateTripActivity.this).execute(bytedata);
+                            new UploadImageAsyncTask(CreateTripActivity.this, "TripProfilePhoto/").execute(bytedata);
                         }catch (Exception e){
                             e.printStackTrace();
                         }
@@ -133,12 +124,12 @@ public class CreateTripActivity extends AppCompatActivity implements UploadImage
     }
 
     @Override
-    public void fetchEpisodes(HashMap<String, String> gameList) {
-
-        addTrip.setTripProfilePhotoUrl(gameList.get("photourl"));
-        addTrip.setTripKey(gameList.get("photokey"));
-        databaseReference = FirebaseDatabase.getInstance().getReference();
-        databaseReference.child("Trips").child(gameList.get("photokey")).setValue(addTrip);
+    public void fetchEpisodes(String downloadUrl) {
+        addTrip.setTripProfilePhotoUrl(downloadUrl);
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("Trips");
+        String tripsKey = databaseReference.push().getKey();
+        addTrip.setTripKey(tripsKey);
+        databaseReference.child(tripsKey).setValue(addTrip);
         Toast.makeText(this, "Trip Successfully created!", Toast.LENGTH_LONG);
         finish();
     }

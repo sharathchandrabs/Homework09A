@@ -26,27 +26,29 @@ import java.util.HashMap;
  * Created by Suraj G Desai on 4/19/2017.
  */
 
-public class UploadImageAsyncTask extends AsyncTask<byte[], Void, HashMap<String,String>> {
+public class UploadImageAsyncTask extends AsyncTask<byte[], Void, String> {
     IGetEpisodes mainActivity;
     FirebaseStorage firebaseStorage;
     DatabaseReference databaseReference;
-    HashMap<String,String> keyAndPhotoUrl = null;
+    String keyAndPhotoUrl = null;
+    String imageRef;
 
-    public UploadImageAsyncTask(IGetEpisodes mainActivity) {
+    public UploadImageAsyncTask(IGetEpisodes mainActivity, String imageRef) {
         this.mainActivity = mainActivity;
+        this.imageRef = imageRef;
     }
 
     public static interface IGetEpisodes {
-        public void fetchEpisodes(HashMap<String,String> gameList);
+        public void fetchEpisodes(String downloadUrl);
     }
 
     @Override
-    protected HashMap<String,String> doInBackground(byte[]... params) {
+    protected String doInBackground(byte[]... params) {
         BufferedReader reader = null;
         try {
             final StorageReference storageRef = firebaseStorage.getInstance().getReference();
             final String path = java.util.UUID.randomUUID() + ".png";
-            final StorageReference mountainImagesRef = storageRef.child("TripProfilePhoto/" + path);
+            final StorageReference mountainImagesRef = storageRef.child(imageRef + path);
 
             byte[] bytedata = params[0];
             UploadTask uploadTask = mountainImagesRef.putBytes(bytedata);
@@ -59,12 +61,7 @@ public class UploadImageAsyncTask extends AsyncTask<byte[], Void, HashMap<String
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     @SuppressWarnings("VisualForTests") Uri uri1 = taskSnapshot.getDownloadUrl();
-
-                    databaseReference = FirebaseDatabase.getInstance().getReference().child("Trips");
-                    String tripsKey = databaseReference.push().getKey();
-                    keyAndPhotoUrl = new HashMap<String, String>();
-                    keyAndPhotoUrl.put("photokey", tripsKey);
-                    keyAndPhotoUrl.put("photourl",uri1.toString());
+                    keyAndPhotoUrl = uri1.toString();
                 }
             });
         }catch (Exception e){
@@ -75,7 +72,7 @@ public class UploadImageAsyncTask extends AsyncTask<byte[], Void, HashMap<String
     }
 
     @Override
-    protected void onPostExecute(HashMap<String,String> gameList) {
-        mainActivity.fetchEpisodes(gameList);
+    protected void onPostExecute(String downloadUrl) {
+        mainActivity.fetchEpisodes(downloadUrl);
     }
 }

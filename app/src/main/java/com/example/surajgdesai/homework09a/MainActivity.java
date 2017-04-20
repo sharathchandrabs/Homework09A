@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -118,6 +120,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                             }
                         }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d("fail", e.getMessage());
+                        }
                     });
 
                 } else {
@@ -173,6 +180,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void navigateToDashboard(User thisUser) {
+        refDatabase.child(user.getKey()).setValue(user);
+        prefEditor.putString("userKey", user.getKey());
+        prefEditor.commit();
         Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
         intent.putExtra(getResources().getString(R.string.activeUsr), thisUser);
         startActivity(intent);
