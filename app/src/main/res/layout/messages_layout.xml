@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/frdsRltLyt">
+
+        <TextView
+            android:id="@+id/frdMsgTimeTV"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="18dp"
+            android:layout_alignParentLeft="true" />
+
+        <LinearLayout
+            android:id="@+id/frdMsgLnrLyt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/frdMsgTimeTV"
+            android:background="@drawable/out_message_bg"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/frdsNameTxtVw"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="10dp"
+                android:textAlignment="textStart"
+                android:textSize="18dp"
+                android:textStyle="italic" />
+
+            <TextView
+                android:id="@+id/frdsTextVw"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/frdsNameTxtVw"
+                android:layout_marginLeft="10dp"
+                android:textAlignment="textStart"
+                android:textSize="20dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/frdImgLnrLyt"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/frdMsgTimeTV"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/frdsNameTxtVwImg"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="10dp"
+                android:textAlignment="textStart"
+                android:textSize="18dp"
+                android:textStyle="italic" />
+
+            <ImageView
+                android:id="@+id/frdsImageChat"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="10dp" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/selfRltLyt">
+
+        <TextView
+            android:id="@+id/slfMsgTimeTV"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="18dp"
+            android:layout_alignParentRight="true" />
+
+        <LinearLayout
+            android:id="@+id/slfMsgLnrLyt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/slfMsgTimeTV"
+            android:background="@drawable/in_message_bg"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/selfNameTxtVw"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:textAlignment="textEnd"
+                android:textSize="18dp"
+                android:textStyle="italic" />
+
+            <TextView
+                android:id="@+id/selfTextVw"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@+id/selfNameTxtVw"
+                android:layout_marginRight="10dp"
+                android:textAlignment="textEnd"
+                android:textSize="20dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/slfImgLnrLyt"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/slfMsgTimeTV"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/selfNameImgTxtVw"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:textAlignment="textEnd"
+                android:textSize="18dp"
+                android:textStyle="italic" />
+
+            <ImageView
+                android:id="@+id/selfImageChat"
+                android:layout_width="230dp"
+                android:layout_height="150dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="20dp" />
+        </LinearLayout>
+
+    </RelativeLayout>
+</RelativeLayout>
