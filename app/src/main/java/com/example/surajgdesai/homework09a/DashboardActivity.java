@@ -108,39 +108,6 @@ public class DashboardActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /*@Override
-    public void getUserFrds(String userKey) {
-        progressDialog.show();
-        new FetchUsersFriendsAsync(this).execute(userKey);
-    }*/
-
-/*    @Override
-    public void fetchEpisodes(ArrayList<String> gameList) {
-        progressDialog.dismiss();
-        userfriends = gameList;
-
-        new FetchUserAsyncTask(this).execute(currentUser);
-
-        //Log.d("userfriendlist", gameList.toString());
-        //mSectionsPagerAdapter.friendsFragment.setUsersFriends(gameList);
-    }
-
-    @Override
-    public void fetchedUsers(ArrayList<User> gameList) {
-        //Log.d("friendsUsersFetcehd", gameList.toString());
-
-
-        for (User u: gameList
-             ) {
-            if(userfriends.contains(u.getKey())){
-                usersFriendsList.add(u);
-            }
-        }
-        Log.d("userfriendlist", usersFriendsList.toString());
-        tabLayout.getTabAt(selectedTab).select();
-        mSectionsPagerAdapter.friendsFragment.setUsersFriends(usersFriendsList);
-    }*/
-
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
         public FriendsFragment friendsFragment;
         public TripsFragment tripsFragment;

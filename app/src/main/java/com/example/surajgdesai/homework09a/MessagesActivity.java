@@ -108,7 +108,7 @@ public class MessagesActivity extends AppCompatActivity implements UploadImageAs
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_settings:
                 Intent editintent = new Intent(MessagesActivity.this, EditProfileActivity.class);
                 startActivity(editintent);
@@ -155,6 +155,7 @@ public class MessagesActivity extends AppCompatActivity implements UploadImageAs
         message.setCreatedBy(userKey);
         message.setPic(true);
         message.setCreatedDate(new Date());
-        messagesRef.push().setValue(message);
+        String messageKey = messagesRef.push().getKey();
+        messagesRef.child(messageKey).setValue(message);
     }
 }
