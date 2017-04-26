@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -26,14 +28,15 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by shara on 4/13/2017.
  */
 
-public class FriendsFragment extends Fragment implements FetchUsersFriendsAsync.IGetEpisodes{
+public class FriendsFragment extends Fragment {
 
-
+//    IGetFriends getFriendsListener;
 
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
@@ -44,6 +47,11 @@ public class FriendsFragment extends Fragment implements FetchUsersFriendsAsync.
     RecyclerView friendsFragmentRecycler;
     ArrayList<User> usersFriends;
 
+    String currentUser;
+    /*public FriendsFragment(IGetFriends getFriendsListener) {
+        this.getFriendsListener = getFriendsListener;
+    }*/
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -51,28 +59,30 @@ public class FriendsFragment extends Fragment implements FetchUsersFriendsAsync.
         FloatingActionButton fb = (FloatingActionButton) root.findViewById(R.id.fabFriends);
         friendsFragmentRecycler = (RecyclerView) root.findViewById(R.id.friendsFragmentRV);
         usersFriends = new ArrayList<>();
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        currentUser = sharedPreferences.getString("userKey", null);
         fb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Snackbar.make(root, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-
-                Intent intent =  new Intent(getActivity(), FriendRequestActivity.class);
+                Intent intent = new Intent(getActivity(), FriendRequestActivity.class);
                 getActivity().startActivity(intent);
-
+            }
+        });
+        root.findViewById(R.id.fabFriendRequests).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), AcceptRequestsActivity.class));
             }
         });
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String userKey = sharedPreferences.getString("userKey", null);
-
-        new FetchUsersFriendsAsync(FriendsFragment.this).execute(userKey);
+        friendsFragmentRecycler = (RecyclerView) root.findViewById(R.id.friendsFragmentRV);
+        RecyclerViewFriendsFragment adapter = new RecyclerViewFriendsFragment(getActivity(),
+                currentUser, R.layout.friends_layout);
+        friendsFragmentRecycler.setAdapter(adapter);
+        friendsFragmentRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        adapter.notifyDataSetChanged();
 
 
         return root;
-    }
-
-    @Override
-    public void fetchEpisodes(ArrayList<User> gameList) {
-        Log.d("async",gameList.toString());
     }
 }

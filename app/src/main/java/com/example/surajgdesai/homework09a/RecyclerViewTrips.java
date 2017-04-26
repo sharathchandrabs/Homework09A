@@ -1,6 +1,8 @@
 package com.example.surajgdesai.homework09a;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +10,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
@@ -32,9 +37,11 @@ public class RecyclerViewTrips extends RecyclerView.Adapter<RecyclerViewTrips.Vi
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        EditText tripsTxtVw = holder.tripsTxtVw;
+        TextView tripsTxtVw = holder.tripsTxtVw;
         Button joinBtn = holder.joinBtn;
         tripsTxtVw.setText(gObjects.get(position).getTitle());
+        tripsTxtVw.setTag(position);
+
 
 
         joinBtn.setOnClickListener(new View.OnClickListener() {
@@ -52,13 +59,13 @@ public class RecyclerViewTrips extends RecyclerView.Adapter<RecyclerViewTrips.Vi
 
     static class ViewHolder extends RecyclerView.ViewHolder{
 
-        EditText tripsTxtVw;
+        TextView tripsTxtVw;
         Button joinBtn;
 
 
         public ViewHolder(View itemView) {
             super(itemView);
-            tripsTxtVw = (EditText) itemView.findViewById(R.id.tripsTxtVw);
+            tripsTxtVw = (TextView) itemView.findViewById(R.id.tripsTxtVw);
             joinBtn = (Button) itemView.findViewById(R.id.joinBtn);
         }
     }

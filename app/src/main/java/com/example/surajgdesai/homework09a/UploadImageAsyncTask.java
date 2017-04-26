@@ -21,6 +21,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by Suraj G Desai on 4/19/2017.
@@ -46,16 +48,22 @@ public class UploadImageAsyncTask extends AsyncTask<byte[], Void, String> {
     protected String doInBackground(byte[]... params) {
         BufferedReader reader = null;
         try {
+            ExecutorService taskExecutor = Executors.newFixedThreadPool(4);
+
             final StorageReference storageRef = firebaseStorage.getInstance().getReference();
             final String path = java.util.UUID.randomUUID() + ".png";
             final StorageReference mountainImagesRef = storageRef.child(imageRef + path);
 
             byte[] bytedata = params[0];
             UploadTask uploadTask = mountainImagesRef.putBytes(bytedata);
+
+//            taskExecutor.
+
+/*
             uploadTask.addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Log.d("fail",e.getMessage());
+                    Log.d("fail", e.getMessage());
                 }
             }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -63,8 +71,16 @@ public class UploadImageAsyncTask extends AsyncTask<byte[], Void, String> {
                     @SuppressWarnings("VisualForTests") Uri uri1 = taskSnapshot.getDownloadUrl();
                     keyAndPhotoUrl = uri1.toString();
                 }
-            });
-        }catch (Exception e){
+            });*/
+
+            while (uploadTask.isInProgress()) {
+                Thread.sleep(2000);
+                continue;
+            }
+            Thread.sleep(5000);
+            if (uploadTask.isComplete())
+                keyAndPhotoUrl = uploadTask.getResult().getDownloadUrl().toString();
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

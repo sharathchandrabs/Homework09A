@@ -126,10 +126,15 @@ public class CreateTripActivity extends AppCompatActivity implements UploadImage
     @Override
     public void fetchEpisodes(String downloadUrl) {
         addTrip.setTripProfilePhotoUrl(downloadUrl);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String currentUser = sharedPreferences.getString("userKey", null);
         databaseReference = FirebaseDatabase.getInstance().getReference().child("Trips");
+       DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUser).child("Trips");
+        String userTripKey = userRef.push().getKey();
         String tripsKey = databaseReference.push().getKey();
         addTrip.setTripKey(tripsKey);
         databaseReference.child(tripsKey).setValue(addTrip);
+        userRef.child(userTripKey).setValue(tripsKey);
         Toast.makeText(this, "Trip Successfully created!", Toast.LENGTH_LONG);
         finish();
     }

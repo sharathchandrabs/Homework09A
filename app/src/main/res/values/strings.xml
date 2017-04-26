@@ -8,7 +8,7 @@
     <string name="googleSignin">You can also choose to Sign-in with your google account, click on the button below</string>
     <string name="SignUp">Sign Up</string>
     <string name="title_activity_dashboard">DashboardActivity</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Edit Profile</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="activeUsr">activeUser</string>
     <string name="ProvideValidInput">Provide both user name and password and then hit login</string>

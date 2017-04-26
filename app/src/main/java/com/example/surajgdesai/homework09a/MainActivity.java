@@ -52,35 +52,48 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        try {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.dashboardtoolbar);
-        setSupportActionBar(toolbar);
-        toolbar.setTitle(R.string.AppTitle);
+            Toolbar toolbar = (Toolbar) findViewById(R.id.dashboardtoolbar);
+            setSupportActionBar(toolbar);
+            toolbar.setTitle(R.string.AppTitle);
 
-        refDb = FirebaseDatabase.getInstance();
-        refDatabase = refDb.getReference().child("Users");
+            refDb = FirebaseDatabase.getInstance();
+            refDatabase = refDb.getReference().child("Users");
 
-        preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        prefEditor = preferences.edit();
+            preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            prefEditor = preferences.edit();
 
-        prefEditor.clear();
-        prefEditor.commit();
+            prefEditor.clear();
+            prefEditor.commit();
 
-        firebaseAuth = FirebaseAuth.getInstance();
-        Gson gson = new Gson();
-        String json = preferences.getString(getResources().getString(R.string.activeUsr), "");
-        if (json != null && !json.equals("") && !json.equals("null")) {
-            user = gson.fromJson(json, User.class);
-            Intent intent = new Intent(this, DashboardActivity.class);
-            intent.putExtra(getResources().getString(R.string.activeUsr), user);
-            startActivity(intent);
-        } else {
-            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestEmail().build();
-            googleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this, this)
-                    .addApi(Auth.GOOGLE_SIGN_IN_API, gso).addApi(Plus.API).build();
+            findViewById(R.id.gsigninbtn).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                            .requestEmail().build();
+                    googleApiClient = new GoogleApiClient.Builder(MainActivity.this).enableAutoManage(MainActivity.this, MainActivity.this)
+                            .addApi(Auth.GOOGLE_SIGN_IN_API, gso).addApi(Plus.API).build();
+                    Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
+                    startActivityForResult(signInIntent, SignIn);
+                }
+            });
+
+
+            firebaseAuth = FirebaseAuth.getInstance();
+            Gson gson = new Gson();
+            String json = preferences.getString(getResources().getString(R.string.activeUsr), "");
+            if (json != null && !json.equals("") && !json.equals("null")) {
+                user = gson.fromJson(json, User.class);
+                Intent intent = new Intent(this, DashboardActivity.class);
+                intent.putExtra(getResources().getString(R.string.activeUsr), user);
+                startActivity(intent);
+            } else {
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -88,10 +101,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.gsigninbtn:
-                Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
-                startActivityForResult(signInIntent, SignIn);
-                break;
             case R.id.loginbtn:
                 username = (EditText) findViewById(R.id.usrnmedt);
                 pwd = (EditText) findViewById(R.id.pwdedt);
@@ -109,6 +118,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         user = dataSnapshot.getValue(User.class);
+//                                        for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+//
+//                                        }
+
                                         MainActivity.this.navigateToDashboard(user);
                                     }
 
@@ -142,35 +155,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SignIn) {
-            GoogleSignInResult googleSignInResult = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            Person person = Plus.PeopleApi.getCurrentPerson(googleApiClient);
+            final GoogleSignInResult googleSignInResult = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            final Person person = Plus.PeopleApi.getCurrentPerson(googleApiClient);
+
+
+            refDatabase.child(googleSignInResult.getSignInAccount().getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        user = dataSnapshot.getValue(User.class);
+                        prefEditor.putString("userKey", user.getKey());
+                        prefEditor.commit();
+                        Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
+                        intent.putExtra(getResources().getString(R.string.activeUsr), user);
+                        startActivity(intent);
+                    } else {
+                        user = new User();
+                        user.setKey(googleSignInResult.getSignInAccount().getId());
+                        user.setFname(googleSignInResult.getSignInAccount().getGivenName());
+                        user.setLname(googleSignInResult.getSignInAccount().getFamilyName());
+                        user.setGender(person.getGender() == 0 ? "Male" : "Female");
+                        user.setEmail(googleSignInResult.getSignInAccount().getEmail());
+                        user.setProfilePicUrl(googleSignInResult.getSignInAccount().getPhotoUrl().toString());
+                        user.setDisplayName(googleSignInResult.getSignInAccount().getDisplayName());
+                        refDatabase.child(user.getKey()).setValue(user);
+                        prefEditor.putString("userKey", user.getKey());
+                        prefEditor.commit();
+                        Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
+                        intent.putExtra(getResources().getString(R.string.activeUsr), user);
+                        startActivity(intent);
+                    }
+
+                    finish();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Toast.makeText(MainActivity.this, "Google login failed, Try again!", Toast.LENGTH_LONG).show();
+                }
+            });
+
+
 
             final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
             progressDialog.setCancelable(false);
-            final FirebaseUser firebaseuser = firebaseAuth.getCurrentUser();
 
-            user = new User();
-            user.setFname(googleSignInResult.getSignInAccount().getGivenName());
-            user.setLname(googleSignInResult.getSignInAccount().getFamilyName());
-            user.setGender(person.getGender() == 0 ? "Male" : "Female");
-            user.setProfilePicUrl(googleSignInResult.getSignInAccount().getPhotoUrl().toString());
-            user.setDisplayName(googleSignInResult.getSignInAccount().getDisplayName());
-            user.setKey(firebaseuser.getUid());
-
-
-            refDatabase.child(user.getKey()).setValue(user);
-/*
-            Gson gson = new Gson();
-            String json = gson.toJson(user);*//*
-            prefEditor.putString(getResources().getString(R.string.activeUsr), json);
-            prefEditor.commit();*/
-
-            prefEditor.putString("userKey", user.getKey());
-            prefEditor.commit();
-
-            Intent intent = new Intent(this, DashboardActivity.class);
-            intent.putExtra(getResources().getString(R.string.activeUsr), user);
-            startActivity(intent);
         }
     }
 
@@ -180,11 +209,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void navigateToDashboard(User thisUser) {
-        refDatabase.child(user.getKey()).setValue(user);
+        refDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.hasChild(user.getKey())){
+                    refDatabase.child(user.getKey()).setValue(user);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        //refDatabase.child(user.getKey()).setValue(user);
         prefEditor.putString("userKey", user.getKey());
         prefEditor.commit();
         Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
         intent.putExtra(getResources().getString(R.string.activeUsr), thisUser);
         startActivity(intent);
+        finish();
     }
 }

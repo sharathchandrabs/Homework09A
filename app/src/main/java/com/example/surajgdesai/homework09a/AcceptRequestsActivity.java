@@ -1,34 +1,22 @@
 package com.example.surajgdesai.homework09a;
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
-import java.util.Map;
 
-public class FriendRequestActivity extends AppCompatActivity {
+public class AcceptRequestsActivity extends AppCompatActivity {
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
     SharedPreferences sharedPreferences;
@@ -42,20 +30,20 @@ public class FriendRequestActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_friend_request);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setContentView(R.layout.activity_accept_requests);
+
         userList = new ArrayList<>();
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(FriendRequestActivity
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(AcceptRequestsActivity
                 .this);
         userKey = sharedPreferences.getString("userKey", null);
         databaseReference = FirebaseDatabase.getInstance().getReference().child("Users");
-        friendsList = (RecyclerView) findViewById(R.id.friendsRecycler);
-        RecyclerViewForFriends adapter = new RecyclerViewForFriends(databaseReference, userKey, this, R
-                .layout.friends_layout);
+        friendsList = (RecyclerView) findViewById(R.id.acceptRequestsRV);
+        RecyclerAcceptRequests adapter = new RecyclerAcceptRequests(databaseReference, userKey, this, R
+                .layout.acceptfriendslayoutrv);
         friendsList.setAdapter(adapter);
-        friendsList.setLayoutManager(new LinearLayoutManager(FriendRequestActivity.this));
+        friendsList.setLayoutManager(new LinearLayoutManager(AcceptRequestsActivity.this));
         adapter.notifyDataSetChanged();
+
 
     }
 }

@@ -36,7 +36,7 @@ public class FetchUserAsyncTask extends AsyncTask<String, Void, ArrayList<User>>
     }
 
     public static interface IGetEpisodes {
-        public void fetchEpisodes(ArrayList<User> gameList);
+        public void fetchedUsers(ArrayList<User> gameList);
     }
 
     @Override
@@ -69,6 +69,6 @@ public class FetchUserAsyncTask extends AsyncTask<String, Void, ArrayList<User>>
 
     @Override
     protected void onPostExecute(ArrayList<User> gameList) {
-        mainActivity.fetchEpisodes(gameList);
+        mainActivity.fetchedUsers(gameList);
     }
 }

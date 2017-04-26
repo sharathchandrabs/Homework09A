@@ -15,6 +15,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,18 +25,17 @@ import java.util.List;
 public class RecyclerViewFriends extends RecyclerView.Adapter<RecyclerViewFriends.ViewHolder> {
 
     Context gContext;
-    List<User> gObjects;
+    ArrayList<User> gObjects;
+    ArrayList<String> friendsList;
     int currentLayout;
     SharedPreferences sharedPreferences;
     String loggedInUserKey;
 
 
-    public RecyclerViewFriends(Context gContext, List<User> gObjects, int currentLayout) {
+    public RecyclerViewFriends(Context gContext, String currentuser, int currentLayout) {
         this.gContext = gContext;
-        this.gObjects = gObjects;
         this.currentLayout = currentLayout;
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(gContext);
-        loggedInUserKey = sharedPreferences.getString("userKey",null);
+        loggedInUserKey = currentuser;
     }
 
     // Easy access to the context object in the recyclerview

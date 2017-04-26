@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -75,7 +76,7 @@ public class SignUpActivity extends AppCompatActivity implements UploadImageAsyn
         genderSpinner = (Spinner) findViewById(R.id.genderedt);
 
         ArrayAdapter<String> gameKindArray = new ArrayAdapter<String>(SignUpActivity.this, android.R.layout
-                .simple_spinner_item, R.array.GenderArray);
+                .simple_spinner_item, getResources().getStringArray(R.array.GenderArray));
 
         genderSpinner.setAdapter(gameKindArray);
 
@@ -89,6 +90,7 @@ public class SignUpActivity extends AppCompatActivity implements UploadImageAsyn
         emailedt = (EditText) findViewById(R.id.emailedt);
         pwdedt = (EditText) findViewById(R.id.pwdedtsignup);
         cnfpwdedt = (EditText) findViewById(R.id.cnfpwdedtsignup);
+        pickProfileImgVw = (ImageView) findViewById(R.id.pickProfileImgVw);
 
         final ProgressDialog progressDialog = new ProgressDialog(SignUpActivity.this);
         progressDialog.setCancelable(false);
@@ -100,6 +102,13 @@ public class SignUpActivity extends AppCompatActivity implements UploadImageAsyn
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_PICK);
                 startActivityForResult(Intent.createChooser(intent, "Select Picture"), 100);
+            }
+        });
+
+        findViewById(R.id.cancelbtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 
@@ -152,6 +161,9 @@ public class SignUpActivity extends AppCompatActivity implements UploadImageAsyn
                                                                     .build();
                                                             firebaseuser.updateProfile(profileUpdates);
                                                             prefEditor.putString("userKey", user.getKey());
+
+                                                            finish();
+
                                                             prefEditor.commit();
                                                         } catch (Exception e) {
                                                             e.printStackTrace();
@@ -163,7 +175,7 @@ public class SignUpActivity extends AppCompatActivity implements UploadImageAsyn
                                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
                                             profilePhoto.compress(Bitmap.CompressFormat.PNG, 100, baos);
                                             byte[] bytedata = baos.toByteArray();
-                                            new UploadImageAsyncTask(SignUpActivity.this, "TripProfilePhoto/")
+                                            new UploadImageAsyncTask(SignUpActivity.this, "Profile pictures/")
                                                     .execute(bytedata);
                                         }
                                     } catch (Exception e) {
@@ -177,6 +189,8 @@ public class SignUpActivity extends AppCompatActivity implements UploadImageAsyn
                                 Log.d("Signup exception", e.getMessage().toString());
                             }
                         });
+
+                        finish();
                     } else {
                         Toast.makeText(SignUpActivity.this, getResources().getString(R.string.PasswordCnfShouldbesame), Toast.LENGTH_SHORT).show();
                     }
@@ -207,18 +221,26 @@ public class SignUpActivity extends AppCompatActivity implements UploadImageAsyn
 
     @Override
     public void fetchEpisodes(String downloadUrl) {
-        user.setProfilePicUrl(downloadUrl);
-        final Map<String, User> userMap = new HashMap<String, User>();
-        userMap.put(user.getKey(), user);
-        refDatabase.child(user.getKey()).setValue
-                (user);
-        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                .setDisplayName(user.getDisplayName())
-                .setPhotoUri(Uri.parse(user.getProfilePicUrl()))
-                .build();
-        firebaseuser.updateProfile(profileUpdates);
-        prefEditor.putString("userKey", user.getKey());
-        prefEditor.commit();
+        if (downloadUrl != null) {
+            user.setProfilePicUrl(downloadUrl);
+            final Map<String, User> userMap = new HashMap<String, User>();
+            userMap.put(user.getKey(), user);
+            refDatabase.child(user.getKey()).setValue
+                    (user);
+            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                    .setDisplayName(user.getDisplayName())
+                    .setPhotoUri(Uri.parse(user.getProfilePicUrl()))
+                    .build();
+            firebaseuser.updateProfile(profileUpdates);
+            prefEditor.putString("userKey", user.getKey());
+            prefEditor.commit();
+            finish();
+        }
+    }
 
+
+    private void navigateToLogin() {
+        Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+        startActivity(intent);
     }
 }

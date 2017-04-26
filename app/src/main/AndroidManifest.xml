@@ -23,7 +23,10 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".JoinTripActivity" />
         <activity android:name=".CreateTripActivity" />
-        <activity android:name=".FriendRequestActivity"></activity>
+        <activity android:name=".FriendRequestActivity" />
+        <activity android:name=".MessagesActivity" />
+        <activity android:name=".EditProfileActivity" />
+        <activity android:name=".AcceptRequestsActivity"></activity>
     </application>
 
 </manifest>
